@@ -1,6 +1,6 @@
 import lib
 
-# List of dictionaries
+# List of chromosomes
 FATHERS = []
 SONS = []
 SURVIVORS = []
@@ -11,10 +11,10 @@ GENERATION = []
 
 
 if __name__ == '__main__':
-    print('Generating default curve points')
-    default_x, default_y = lib.generate_default_curve_points()
+    # print('Generating default curve points')
+    # default_x, default_y = lib.generate_default_curve_points()
     print('Generating new chromosomes')
-    for chromosome in range(1000):
+    for chromosome in range(100):
         FATHERS.append(lib.generate_chromosome())
     for generation in range(100):
         print('Generation #{}'.format(generation))
@@ -24,14 +24,16 @@ if __name__ == '__main__':
 
         print('Plot curve and error from best individual from this generation')
         best_in_generation = lib.find_best_in_generation(SURVIVORS.copy())
-        new_x, new_y = lib.generate_new_curve_points(best_in_generation)
         GENERATION.append(generation)
         ERROR.append(best_in_generation[-1])
-        lib.plot_results(default_x, default_y, new_y, GENERATION, ERROR, generation)
+        # TODO: Modify plot_results function to plot in 3D
+        # lib.plot_results(default_x, default_y, new_y, GENERATION, ERROR, generation)
 
         print('Substituting individuals')
+        # TODO: Modify reproduction function to use new values
         SONS = lib.reproduction(SURVIVORS.copy())
         FATHERS.clear()
         FATHERS = SONS.copy()
         SONS.clear()
         SURVIVORS.clear()
+
