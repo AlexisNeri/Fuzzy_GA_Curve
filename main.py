@@ -11,12 +11,10 @@ GENERATION = []
 
 
 if __name__ == '__main__':
-    # print('Generating default curve points')
-    # default_x, default_y = lib.generate_default_curve_points()
     print('Generating new chromosomes')
-    for chromosome in range(100):
-        FATHERS.append(lib.generate_chromosome())
-    for generation in range(100):
+    for chromosome in range(1000):
+        FATHERS.append(lib.fuzzy_chromosome_generator(lib.fuzzy_feeder()))
+    for generation in range(200):
         print('Generation #{}'.format(generation))
         for tournament in range(100):
             print('Tournament #{}'.format(tournament))
@@ -34,4 +32,3 @@ if __name__ == '__main__':
         FATHERS = SONS.copy()
         SONS.clear()
         SURVIVORS.clear()
-
