@@ -1,15 +1,13 @@
-import math
 import random
 from matplotlib import pyplot as plt
+from mpl_toolkits import mplot3d
+import numpy as np
 
-# DEFAULT_CHROMOSOME = (8, 25, 4, 45, 10, 17, 35)
-WEEK_DAYS = ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')
+WEEK_DAYS = (0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0)
 
-# Hour in military format for ease of use
-HOURS = ('0000', '0030', '0100', '0130', '0200', '0230', '0300', '0330', '0400', '0430', '0500', '0530', '0600', '0630',
-         '0700', '0730', '0800', '0830', '0900', '0930', '1000', '1030', '1100', '1130', '1200', '1230', '1300', '1330',
-         '1400', '1430', '1500', '1530', '1600', '1630', '1700', '1730', '1800', '1830', '1900', '1930', '2000', '2030',
-         '2100', '2130', '2200', '2230', '2300', '2330')
+HOURS = (0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0,
+         20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0, 35.0, 36.0, 37.0,
+         38.0, 39.0, 40.0, 41.0, 42.0, 43.0, 44.0, 45.0, 46.0, 47.0)
 
 DEFAULT_CHROMOSOME = (
     (22, 21, 22, 22, 22, 22, 22),
@@ -62,12 +60,25 @@ DEFAULT_CHROMOSOME = (
     (22, 22, 22, 22, 22, 22, 22)
 )
 
-figure, axis = plt.subplots(nrows=1, ncols=2)
-figure.suptitle('Curve GA')
+# Generating static points
+Y, X = np.meshgrid(WEEK_DAYS, HOURS)
+default_z = np.array(DEFAULT_CHROMOSOME)
+# Put plot into dynamic mode
 plt.ion()
-axis[1].set_title("Error evolution")
-axis[1].set_ylabel('Error')
-axis[1].grid(True)
+# Generate plot and subplots
+figure = plt.figure()
+figure.suptitle('Neuro-Fuzzy Network')
+generated_surface = figure.add_subplot(131, projection='3d')
+
+error_evolution = figure.add_subplot(132)
+error_evolution.set_title("Error Evolution")
+error_evolution.set_ylabel('Error')
+error_evolution.grid(True)
+
+default_surface = figure.add_subplot(133, projection='3d')
+default_surface.set_xlabel('Hour')
+default_surface.set_ylabel('Day')
+default_surface.set_zlabel('Average Time')
 
 
 def generate_chromosome():
@@ -87,8 +98,6 @@ def generate_genes():
 
 
 def tournament(fathers):
-    # Obtaining default curve values
-    # default_x, default_y = generate_default_curve_points()
     participants = []
     aptitude_tag_list = []
     winner = []
@@ -144,27 +153,30 @@ def find_best_in_generation(survivors):
     return winner
 
 
-def plot_results(x, default_y, new_y, generation, error, current_generation):
-    # Clean th curve plot
-    axis[0].clear()
-    axis[0].grid(True)
-    axis[0].set_title("Curve adaptation")
+def plot_results(generation, error, z, x=X, y=Y):
+    # Generate new z matrix
+    z_np_real = np.array(z)
+    # Clean the subplot
+    generated_surface.clear()
 
-    # Curve adaptation
-    axis[0].plot(x, default_y, color='g', label='Default curve')
-    axis[0].plot(x, new_y, color='r', label='Generated curve')
-    axis[0].legend()
+    # Generated surface
+    generated_surface.set_xlabel('Hour')
+    generated_surface.set_ylabel('Day')
+    generated_surface.set_zlabel('Average Time')
+    generated_surface.plot_surface(x, y, z_np_real, cmap='viridis')
 
     # Error evolution
-    axis[1].set_xlabel('Generation #{}'.format(current_generation))
-    axis[1].plot(generation, error)
+    error_evolution.set_xlabel('Generation #{}'.format(generation[-1]))
+    error_evolution.plot(generation, error)
+
+    # Default surface
+    default_surface.plot_surface(x, y, default_z, cmap='viridis')
 
     plt.show()
     plt.pause(0.00001)
 
 
 def reproduction(survivors):
-    # TODO: Remove aptitude function to avoid introduce false values
     sons = []
     fathers, mothers = split_list(survivors)
     for chromosome in range(len(fathers)):
@@ -200,5 +212,4 @@ def split_list(a_list):
 def mutation(sons, mutation_factor=random.choice(range(1, 25))):
     for i in range(mutation_factor):
         individual = sons[random.choice(range(len(sons)))]
-        # for j in range(mutation_factor):
         individual[random.choice(range(48))] = generate_genes()
