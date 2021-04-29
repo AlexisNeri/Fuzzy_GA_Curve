@@ -94,7 +94,7 @@ def generate_genes():
     gen = []
     for allele in range(len(WEEK_DAYS)):
         gen.append(random.choice(range(20, 44)))
-    print('The generated gen is: {}'.format(gen))
+    # print('The generated gen is: {}'.format(gen))
     return gen
 
 
@@ -208,13 +208,13 @@ def tournament(fathers):
     aptitude_tag_list = []
     winner = []
 
-    number_of_participants = random.choice(range(2, 30))
+    number_of_participants = random.choice(range(2, 10))
 
-    print('Generating randomly {} participants\n'.format(number_of_participants))
+    # print('Generating randomly {} participants\n'.format(number_of_participants))
     for i in range(number_of_participants):
         candidate_chromosome = fathers[random.choice(range(len(fathers)))]
         participants.append(candidate_chromosome)
-    print('These are the participants: {}\n'.format(participants))
+    # print('These are the participants: {}\n'.format(participants))
 
     # Calculating and appending curve error
     for candidate in participants:
@@ -226,7 +226,7 @@ def tournament(fathers):
             candidate.append(error)
 
     # Getting winner chromosome
-    print('Getting winner chromosome\n')
+    # print('Getting winner chromosome\n')
     winner_value = min(aptitude_tag_list)
     for candidate in participants:
         if winner_value == candidate[-1]:
@@ -261,7 +261,9 @@ def find_best_in_generation(survivors):
 
 def plot_results(generation, error, z, x=X, y=Y):
     # Generate new z matrix
+    # print('Raw data: {}'.format(z))
     z_np_real = np.array(z)
+    # print(z_np_real)
     # Clean the subplot
     generated_surface.clear()
 
@@ -302,8 +304,7 @@ def reproduction(survivors):
                 subject_b = male_chromosome
             son = subject_a[:slice_point]
             son.extend(subject_b[slice_point:])
-            print('Generated son #{0}: {1} from fathers: {2} and {3}'.format(chromosome, son, male_chromosome,
-                                                                             female_chromosome))
+            # print('Generated son #{0}: {1} from fathers: {2} and {3}'.format(chromosome, son, male_chromosome, female_chromosome))
             sons.append(son)
     # Once reproduction has finished we called mutation to generate random mutations
     mutation(sons)
@@ -315,7 +316,7 @@ def split_list(a_list):
     return a_list[:half], a_list[half:]
 
 
-def mutation(sons, mutation_factor=random.choice(range(1, 5))):
+def mutation(sons, mutation_factor=random.choice(range(1, 3))):
     for i in range(mutation_factor):
         individual = sons[random.choice(range(len(sons)))]
         individual[random.choice(range(48))] = generate_genes()
