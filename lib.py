@@ -91,9 +91,11 @@ default_surface.set_zlabel('Average Time')
 
 
 def generate_genes():
-    gen = []
-    for allele in range(len(WEEK_DAYS)):
-        gen.append(random.choice(range(20, 44)))
+    chromosome = fuzzy_chromosome_generator(fuzzy_feeder())
+    gen = chromosome[random.choice(range(48))]
+    # gen = []
+    # for allele in range(len(WEEK_DAYS)):
+    #     gen.append(random.choice(range(20, 44)))
     # print('The generated gen is: {}'.format(gen))
     return gen
 
@@ -316,7 +318,7 @@ def split_list(a_list):
     return a_list[:half], a_list[half:]
 
 
-def mutation(sons, mutation_factor=random.choice(range(1, 3))):
+def mutation(sons, mutation_factor=random.choice(range(1, 15))):
     for i in range(mutation_factor):
         individual = sons[random.choice(range(len(sons)))]
         individual[random.choice(range(48))] = generate_genes()
